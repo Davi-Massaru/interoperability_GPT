@@ -21,6 +21,8 @@
       <Resource Directory="i14y" Name="TestLookupTable.LUT"/>
       <Resource Name="dc.Reddit.PKG"/>
       <Resource Name="dc.Demo.PKG"/>
+      <Resource Name="dc.GPT.PKG"/>
+      <Resource Name="dc.Dict.PKG"/>
       <SystemRequirements Version=">=2020.1" Interoperability="enabled" />
     </Module>
   </Document>

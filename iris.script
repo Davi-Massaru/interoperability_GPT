@@ -9,6 +9,16 @@
     zpm "install passwordless"
     zpm "install objectscript-json-trace-viewer"
 
+    Set ^GPT.model = "gpt-3.5-turbo-0613"
+    
+    Set ^GPT.openAI.APIKeys = "<OpenAI.KEY>"
+
+    Set ^GPT.engine("implementation") = "/home/irisowner/dev/prompt-implementation-engineer.txt"
+    Set ^GPT.engine.initial("implementation") = "Write pyhton code"
+
+    Set ^GPT.engine("rule") = "/home/irisowner/dev/prompt-rule-engineer.txt"
+    Set ^GPT.engine.initial("rule") = "Write xml structure Of XDATA content:"
+
 
     zpm "load /home/irisowner/dev/ -dev -v":1:1
     halt

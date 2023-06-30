@@ -2,6 +2,13 @@ ARG IMAGE=intersystemsdc/irishealth-community
 ARG IMAGE=intersystemsdc/iris-community
 FROM $IMAGE
 
+USER root
+## add git
+RUN apt update && apt-get -y install git && apt-get -y install telnet
+
+ENV PIP_TARGET=${ISC_PACKAGE_INSTALLDIR}/mgr/python
+USER ${ISC_PACKAGE_MGRUSER}
+
 WORKDIR /home/irisowner/dev/
 
 ARG TESTS=0

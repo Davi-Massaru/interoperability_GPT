@@ -25,6 +25,7 @@ ClassMethod FixBug(className, method, mensage) [ Language = objectscript ]
 {
     set classMethod = ##class(%Dictionary.MethodDefinition).%OpenId(className_"||"_method)
     Quit:(classMethod = "")
+    Quit:(classMethod.Language '= "python")
 
     Set formalSpec = classMethod.FormalSpec
     Set implementationOld = classMethod.Implementation.Read()

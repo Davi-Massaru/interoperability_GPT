@@ -23,4 +23,31 @@ ClassMethod Run(className, mensage) [ Language = objectscript ]
     return implementation
 }
 
+
+ClassMethod Fix(className, mensage) [ Language = objectscript ]
+{
+    set classRuleDefinition = ##class(%Dictionary.XDataDefinition).%OpenId(className_"||RuleDefinition")
+    Quit:(classRuleDefinition = "")
+
+    Set implementation = classRuleDefinition.Data.Read()
+
+    Set mensage = "rewrite xml "_mensage_$c(13,10) _" RuleDefinition: "_ implementation
+
+    set implementation = ##class(dc.GPT.Engine).generate(mensage,"rule")
+    
+    Do classRuleDefinition.Data.Write(implementation)
+
+    set classRuleDefinition.Deprecated = ""
+    set classRuleDefinition.Description = "Gerenate by GPT.Engine :"_mensage
+    set classRuleDefinition.Internal = "0"
+    set classRuleDefinition.MimeType = "text/xml"
+    set classRuleDefinition.Name = "RuleDefinition"
+    set classRuleDefinition.SchemaSpec = ""
+    set classRuleDefinition.SequenceNumber = "2"
+    set classRuleDefinition.XMLNamespace = "http://www.intersystems.com/rule"
+
+    do classRuleDefinition.%Save()
+    return implementation
+}
+
 }

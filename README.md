@@ -1,63 +1,86 @@
- [![Gitter](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/iris-interoperability-template)
- [![Quality Gate Status](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Firis-interoperability-template&metric=alert_status)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Firis-interoperability-template)
- [![Reliability Rating](https://community.objectscriptquality.com/api/project_badges/measure?project=intersystems_iris_community%2Firis-interoperability-template&metric=reliability_rating)](https://community.objectscriptquality.com/dashboard?id=intersystems_iris_community%2Firis-interoperability-template)
-# iris-interoperability-template
-This is a template of InterSystems IRIS Interoperability solution.
-It contains a simple interoperablity solution which reads data from Reddit, filters it and outputs into file or sends via email.
+# IRIS-GPT
 
-## What The Sample Does
+## Introduction
 
-This sample has an interoperability [production](https://github.com/intersystems-community/iris-interoperability-template/blob/master/src/dc/Demo/Production.cls) with an inbound [Reddit Adapter](https://github.com/intersystems-community/iris-interoperability-template/blob/master/src/dc/Reddit/InboundAdapter.cls) which is used by a [Business Service](https://github.com/intersystems-community/iris-interoperability-template/blob/master/src/dc/Demo/RedditService.cls) to read data from Reddit.com.
-It reads from reddit.com/new/.json every 15 sec.
-You can alter both the URL and frequency in the service's settings.
-<img width="1411" alt="Screenshot 2020-10-29 at 19 33 14" src="https://user-images.githubusercontent.com/2781759/97603605-a6d0af00-1a1d-11eb-99cc-481efadb0ec6.png">
+The IRIS-GPT project demonstrates how to use the GPT chat with Intersystems IRIS by configuring TXT prompt engines globally and defining GPT behavior. It empowers code changes and creations in the system through natural language processing.
 
-The production has a business process with a rule, which filters on news that mentions cats and dogs. The business process then sends this data to a business operation which either saves data to a source folder /output/Dog.txt or /output/Cat.txt.
-<img width="864" alt="Screenshot 2020-10-29 at 19 38 58" src="https://user-images.githubusercontent.com/2781759/97606568-fcf32180-1a20-11eb-90de-4257dd2cf552.png"> 
+There are two pre-programmed prompt engines in this project:
+
+1. **Rules Interoperability Engine:** This engine assists in creating and maintaining rules for interoperability in Intersystems IRIS. It allows interaction with GPT to obtain suggestions and assistance in defining the rules.
+
+2. **Python ClassMethod Engine:** This engine facilitates the creation and maintenance of Python ClassMethods in Intersystems IRIS. It utilizes GPT to provide coding assistance and suggestions to enhance the implementation of methods.
 
 ## Prerequisites
-Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
+Make sure you have : 
+- [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+- [Docker desktop](https://www.docker.com/products/docker-desktop).
+- [openai api key](https://platform.openai.com/account/api-keys).
 
-## Installation: ZPM
+## Installation 
 
-Open IRIS Namespace with Interoperability Enabled.
-Open Terminal and call:
-USER>zpm "install interoperability-sample"
-
-## Installation: Docker
 Clone/git pull the repo into any local directory
 
 ```
-$ git clone https://github.com/intersystems-community/iris-interoperability-template.git
+$ git clone https://github.com/Davi-Massaru/interoperability_GPT.git
+```
+
+Replace a <OPENIA.key> tag to your openia api key on iris.script
+
+```
+Set ^GPT.openAI.APIKeys = "<OPENIA.key>"
+```
+
+You can change a GPT.model, change the iris.script. defined "gpt-3.5-turbo-0613"
+
+```
+Set ^GPT.model = "gpt-3.5-turbo-0613"
 ```
 
 Open the terminal in this directory and run:
 
 ```
-$ docker-compose build
+$ docker-compose build && docker-compose up -d
 ```
 
-3. Run the IRIS container with your project:
+## Creating Engines 
+
+To create new prompt engines, you can create a new TXT file in the project root or inside the Docker container. These files will dictate the behavior of the GPT chat.
+
+After producing the TXT file, configure the global in the following structure:
+
+ - ^GPT.engine("<ENGINE_NAME>"): path to the prompt engine file text.
+ - ^GPT.engine.initial("<ENGINE_NAME>"): initial instructions.
+
+For example, use ^GPT.engine as follows:
 
 ```
-$ docker-compose up -d
+Set ^GPT.engine("implementation") = "/home/irisowner/dev/prompt-implementation-engineer.txt"
+Set ^GPT.engine.initial("implementation") = "Write pyhton code"
 ```
 
+In this example, you created a new engine called "implementation." All instructions sent to the GPT chat will start with the instruction "Write Python code."
 
+Once you've completed these steps, simply execute ##class(dc.GPT.Engine).generate(<message>,"<ENGINE_NAME>") where <message> is the input provided by the user.
 
-## How to Run the Sample
+## Application Examples: 
 
-Open the [production](http://localhost:52795/csp/user/EnsPortal.ProductionConfig.zen?PRODUCTION=dc.Demo.Production) and start it.
-It will start gathering news from reddit.com/new/ and filter it on cats and dogs into /output/Dog.txt or /output/Cat.txt files.
+In this repository, you can find examples of various pre-programmed prompt engines:
 
-You can alter the [business rule](http://localhost:52795/csp/user/EnsPortal.RuleEditor.zen?RULE=dc.Demo.FilterPostsRoutingRule) to filter for different words, or to use an email operation to send posts via email.
-<img width="1123" alt="Screenshot 2020-10-29 at 20 05 34" src="https://user-images.githubusercontent.com/2781759/97607761-77707100-1a22-11eb-9ce8-0d14d6f6e315.png">
+Rule Interoperability Engine: This engine assists with creating and maintaining rules for interoperability in Intersystems IRIS.
 
-## How to alter the template 
-Use the green    "Use this template" button on Github to copy files into a new repository and build a new IRIS interoperability solution using this one as an example.
+Python ClassMethod Engine: This engine facilitates the creation and maintenance of Python ClassMethods in Intersystems IRIS.
 
-This repository is ready to code in VSCode with the ObjectScript plugin.
-Install [VSCode](https://code.visualstudio.com/), [Docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker) and [ObjectScript](https://marketplace.visualstudio.com/items?itemName=daimor.vscode-objectscript) plugin and open the folder in VSCode.
+To test:
 
-Use the handy VSCode menu to access the production and business rule editor and run a terminal:
-<img width="656" alt="Screenshot 2020-10-29 at 20 15 56" src="https://user-images.githubusercontent.com/2781759/97608650-aa673480-1a23-11eb-999e-61e889304e59.png">
+- Python ClassMethod Engine
+    - ```##class(dc.Dict.GenerateMethod).Run(className, method, formalSpec, mensage)```: to generate or override a new ClassMethod in python in the informed class, using formalSpec as parameters.
+
+    - ```##class(dc.Dict.GenerateMethod).FixBug(className, method, mensage)```: to update a ClassMethod in python in the informed class, taking into account the current implementation.
+
+- Rule Interoperability
+
+    - ```##class(dc.Dict.GenerateRule).Run(className, mensage)```: to generate or override a new RuleDefinition in the informed class.
+
+    - ```##class(dc.Dict.GenerateMethod).Fix(className, mensage)```: to update a RuleDefinition in python in the informed class, taking into account the current implementation
+
+    
